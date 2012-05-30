@@ -1,7 +1,4 @@
 #!/usr/bin/env ruby
 
 load File.expand_path('../../lib/tasks/s3archive.thor', __FILE__)
-
-if $0 == __FILE__
-  S3Archive::Cli.start
-end
+S3Archive::Cli.start
