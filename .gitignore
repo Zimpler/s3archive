@@ -13,3 +13,5 @@
 # RubyMine stuff
 /.idea/
 
+# Package directory for rubygems
+/pkg/
