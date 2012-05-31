@@ -15,3 +15,5 @@
 
 # Package directory for rubygems
 /pkg/
+
+Gemfile.lock
