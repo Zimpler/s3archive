@@ -4,7 +4,7 @@ $:.unshift lib unless $:.include?(lib)
 
 Gem::Specification.new do |s|
   s.name        = "s3archive"
-  s.version     = '1.1.0'
+  s.version     = '1.2.0'
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Petter Remen"]
   s.email       = ["petter@spnab.com"]
