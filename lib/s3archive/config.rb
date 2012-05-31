@@ -22,5 +22,11 @@ module S3Archive
         send("#{key}=", val)
       end
     end
+
+    def self.sample_yaml
+      {"bucket" => "BUCKET",
+       "access_key_id" => "ACCESS_KEY_ID",
+       "secret_access_key" => "SECRET_ACCESS_KEY_ID"}.to_yaml
+    end
   end
 end

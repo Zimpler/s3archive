@@ -18,5 +18,10 @@ module S3Archive
       S3Archive.config_path = self.options["c"] if self.options["c"]
       CompressAndUpload.run(orig_path)
     end
+
+    desc "genconfig", "Prints a sample config file to stdout"
+    def genconfig
+      puts S3Archive::Config.sample_yaml
+    end
   end
 end
