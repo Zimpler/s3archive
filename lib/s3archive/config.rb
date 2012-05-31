@@ -7,7 +7,7 @@ module S3Archive
   end
 
   def self.config_path
-    @config_path || "/etc/s3archive.yml"
+    @config_path
   end
 
   def self.config

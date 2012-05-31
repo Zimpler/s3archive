@@ -8,11 +8,11 @@ module S3Archive
     include Logging
     namespace :s3archive
 
-    class_option "-c",
+    class_option :config,
       :desc => "Path to config file",
       :banner => "CONFIG_FILE",
       :type => :string,
-      :aliases => "--config",
+      :aliases => "-c",
       :default => "/etc/s3archive.yml"
 
     desc "upload PATH [PATH...]", "Sleeps, compresses and uploads to s3://<bucket>/<year>/<month>/<day>/<filename>.gz"
@@ -23,7 +23,12 @@ module S3Archive
                   :desc => "The number of seconds to sleep before uploading"
 
     def upload (*paths)
-      S3Archive.config_path = self.options["c"] if self.options["c"]
+      unless File.exists?(options[:config])
+        logger.error("Could not find config file #{options[:config]}")
+        exit(1)
+      end
+
+      S3Archive.config_path = options[:config]
       help(:upload) && exit if paths.empty?
 
       logger.info("Sleeping for #{options[:sleep]} seconds") && sleep(options[:sleep])
