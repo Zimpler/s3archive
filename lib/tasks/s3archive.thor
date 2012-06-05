@@ -2,6 +2,7 @@ require 'thor'
 $:.unshift File.join(File.dirname(__FILE__), '..')
 require 's3archive/postrotate'
 require 's3archive/compress_and_upload'
+require 's3archive/db_dump'
 require 's3archive/logging'
 
 module S3Archive
@@ -57,6 +58,29 @@ EOF
     desc "genconfig", "Prints a sample config file to stdout"
     def genconfig
       puts ::S3Archive::Config.sample_yaml
+    end
+
+    desc "dbdump [options] CONFIG_PATH", "Dump database for ENV (default production) and upload"
+    method_option :environment,
+    :aliases => '-e',
+    :type => :string,
+    :default => 'production',
+    :banner => 'ENV',
+    :desc => "Use db configuration from this environment."
+    long_desc <<-EOT
+Dump and archive a database specified in the rails-style YAML file at CONFIG_PATH.
+By default the production database will be dumped.
+EOT
+    def dbdump(yaml_path)
+      db_config = YAML.load_file(yaml_path)[options[:environment]]
+      dumper = ::S3Archive::DbDump.new(db_config)
+      begin
+        dumper.run
+        set_config
+        ::S3Archive::CompressAndUpload.run(dumper.dump_path)
+      rescue Exception => e
+        logger.error(e)
+      end
     end
 
     no_tasks do
