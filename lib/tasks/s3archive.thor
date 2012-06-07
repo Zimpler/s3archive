@@ -67,19 +67,26 @@ EOF
     :default => 'production',
     :banner => 'ENV',
     :desc => "Use db configuration from this environment."
+    method_option :name,
+    :aliases => '-n',
+    :type => :string,
+    :default => 'dbdump',
+    :desc => 'Basename for the dump file. Timestamp and sql.gz will be added.'
     long_desc <<-EOT
 Dump and archive a database specified in the rails-style YAML file at CONFIG_PATH.
 By default the production database will be dumped.
 EOT
     def dbdump(yaml_path)
       db_config = YAML.load_file(yaml_path)[options[:environment]]
-      dumper = ::S3Archive::DbDump.new(db_config)
+      dumper = ::S3Archive::DbDump.new(db_config, options[:name])
       begin
         dumper.run
         set_config
         ::S3Archive::CompressAndUpload.run(dumper.dump_path)
       rescue Exception => e
         logger.error(e)
+      ensure
+        File.unlink(dumper.dump_path) if dumper.dump_path && File.exists?(dumper.dump_path)
       end
     end
 

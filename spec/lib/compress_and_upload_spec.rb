@@ -38,6 +38,12 @@ module S3Archive
         @cau.stub!(:path).and_return("filename")
         @cau.send(:compress?).should be_true
       end
+      it "caches the answer" do
+        @cau.stub!(:path).and_return("filename.gz")
+        @cau.logger.should_receive(:info).once
+        @cau.send(:compress?).should be_false
+        @cau.send(:compress?).should be_false
+      end
     end
 
     it "should have way more tests"

@@ -4,9 +4,9 @@ $:.unshift lib unless $:.include?(lib)
 
 Gem::Specification.new do |s|
   s.name        = "s3archive"
-  s.version     = '1.4.0'
+  s.version     = '1.4.1'
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["Petter Remen"]
+  s.authors     = ["Petter Remen", "David Vrensk"]
   s.email       = ["petter@spnab.com"]
   s.homepage    = "http://github.com/spab/s3archive"
   s.summary     = "Simple script to safely archive a file to S3"

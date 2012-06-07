@@ -7,14 +7,15 @@ module S3Archive
   class DbDump
     include Logging
 
-    attr_reader :db_config, :dump_path
+    attr_reader :db_config, :dump_path, :name
 
-    def initialize(db_config)
+    def initialize(db_config, name = 'dbdump')
       @db_config = db_config
+      @name = name.gsub(/\s+/, '_')
     end
 
     def run
-      backup_filename = "dbdump-#{Time.now.strftime("%Y%m%dT%H%M%S")}.sql.gz"
+      backup_filename = "#{name}-#{Time.now.utc.strftime("%Y%m%dT%H%M%S")}.sql.gz"
       backup_path = "/tmp/#{backup_filename}"
       logger.info "* Dumping and compressing data to #{backup_path}."
       case db_config['adapter']

@@ -20,7 +20,7 @@ module S3Archive
     def initialize(path)
       @path = path
     end
-    
+
     def run
       unless File.exists?(path)
         logger.error("COULD NOT FIND '#{path}'")
@@ -36,14 +36,15 @@ module S3Archive
 
     private
     def compress?
-      @do_compress ||= begin
-        if path.end_with?('.gz')
+      unless defined? @compression_needed
+        if path.end_with?('.gz') || path.end_with?('.tgz')
           logger.info("** #{path} already compressed, skipping compression")
-          false
+          @compression_needed = false
         else
-          true
+          @compression_needed = true
         end
       end
+      @compression_needed
     end
 
     def compress!
@@ -76,7 +77,11 @@ module S3Archive
 
     def key
       year, month, day = Time.now.strftime("%Y-%m-%d").split('-')
-      [hostname, year, month, day, "#{filename}.gz"].join('/')
+      [hostname, year, month, day, basename_gz].join('/')
+    end
+
+    def basename_gz
+      compress? ? "#{filename}.gz" : filename
     end
 
     def filename
